@@ -1,11 +1,5 @@
 
-var domino = require('domino'),
-	Zepto = require('zepto-node'),
-	window = domino.createWindow(),
-	$ = Zepto(window),
-	_ = require('underscore');
-
-exports.toXml = function(obj) {
+var wxToXml = function(obj) {
 	// TODO: use Array.prototype.join()
 	var xml = '';
 	xml += '<xml>';
@@ -32,12 +26,12 @@ exports.toXml = function(obj) {
 			'<Url><![CDATA['+ obj.url +']]></Url>'
 		].join('');
 	} else if (obj.msgType === 'event') {
-		xml = [
+		xml += [
 			'<Event><![CDATA['+ obj.event +']]></Event>',
 			'<EventKey><![CDATA['+ obj.eventKey +']]></EventKey>'
 		].join('');
 	} else if (obj.msgType === 'music') {
-		xml = [
+		xml += [
 			'<Music>',
 				'<Title><![CDATA['+ obj.title +']]></Title>',
 				'<Description><![CDATA['+ obj.description +']]></Description>',
@@ -46,7 +40,7 @@ exports.toXml = function(obj) {
 			'</Music>'
 		].join('');
 	} else if (obj.msgType === 'location') {
-		xml = [
+		xml += [
 			'<Location_X>'+ obj.locationX +'</Location_X>',
 			'<Location_Y>'+ obj.locationY +'</Location_Y>',
 			'<Scale>'+ obj.scale +'</Scale>',
@@ -54,7 +48,7 @@ exports.toXml = function(obj) {
 		].join('');
 	} else if (obj.msgType === 'news') {
 		// TODO: now support only one
-		xml = [
+		xml += [
 			'<ArticleCount>1</ArticleCount>',
 			'<Articles>',
 				'<item>',
@@ -69,7 +63,7 @@ exports.toXml = function(obj) {
 	xml += '</xml>';
 	return xml;
 }
-exports.toObj = function(xml) {
+var wxToObj = function(xml) {
 	var $xml = $(xml),
 	obj = {
 		toUserName: getCData($xml.find('ToUserName').html()),

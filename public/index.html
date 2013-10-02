@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Wxbase测试</title>
+		<style>
+			fieldset {
+				display: none;
+			}
+			fieldset.open {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Wxbase测试</h1>
+			<form id="form-send">
+				<label>消息类型</label>
+				<select id="msg-type">
+					<option value="text">文本</option>
+					<option value="voice">语音</option>
+					<option value="image">图片</option>
+					<option value="location">位置</option>
+					<option value="event">事件</option>
+				</select>
+				<label>用户名</label>
+				<input type="text" id="from-user-name" value="test-user" />
+				<input type="hidden" id="to-user-name" value="the-host" />
+				
+				<fieldset data-type="text">
+					<legend>文本消息</legend>
+					<label>内容</label>
+					<textarea data-name="content"></textarea>
+				</fieldset>
+				<fieldset data-type="image">
+					<legend>图片消息</legend>
+					<label>URL</label>
+					<input type="url" data-name="picUrl" />
+				</fieldset>
+				<fieldset data-type="location">
+					<legend>位置消息</legend>
+					<label>X坐标</label>
+					<input type="number" data-name="locationX" value="120" />
+					<label>Y坐标</label>
+					<input type="number" data-name="locationY" value="30" />
+					<label>缩放</label>
+					<input type="number" data-name="scale" value="1" />
+					<label>地理标签</label>
+					<input type="text" data-name="label" value="洪湖公园" />
+				</fieldset>
+				<fieldset data-type="event">
+					<legend>事件消息</legend>
+					<select data-name="event">
+						<option value="subscribe">订阅</option>
+						<option value="CLICK">按键</option>
+					</select>
+					<label>按键值</label>
+					<input type="text" data-name="eventKey" value="key-2013" />
+				</fieldset>
+				<input type="submit" value="发送" />
+			</form>
+		</div>
+		
+		<script src="/lib/js/underscore-min.js"></script>
+		<script src="/lib/js/jquery.min.js"></script>
+		<script src="/lib/js/wx-parser.js"></script>
+		<script>
+			var $form = $('#form-send'),
+				$fieldsets = $form.find('fieldset'),
+				currMsgType;
+			
+			// toggle fieldsets
+			$form.find('#msg-type').on('change', function() {
+				var msgType = currMsgType = $(this).val();
+				$fieldsets.removeClass('open')
+					.filter('[data-type="'+ msgType +'"]').addClass('open');
+			}).trigger('change');
+			
+			// fieldset-event
+			var $fsEvent = $fieldsets.filter('[data-type="event"]');
+			$fsEvent.find('[data-name="event"]').on('change', function() {
+				$fsEvent.find('[data-name="eventKey"]')
+					.attr('disabled', $(this).val() !== 'CLICK');
+			}).trigger('change');
+			
+			// form submit
+			$form.on('submit', function(ev) {
+				ev.preventDefault();
+				
+				var msgType = currMsgType, reqObj = {
+					fromUserName: $form.find('#from-user-name').val(),
+					toUserName: $form.find('#to-user-name').val(),
+					createTime: new Date().getTime(),
+					//MsgId: parseInt(Math.random() * 999999999),
+					msgType: msgType
+				};
+				$fieldsets.filter('[data-type="'+ msgType +'"]')
+					.find('[data-name]').each(function(i, el) {
+						var key = $(el).attr('data-name'),
+							value = $(el).val();
+						reqObj[key] = value;
+					});
+				
+				var reqXml = wxToXml(reqObj);
+				console.log('sent: ', reqObj);
+				$.ajax({
+					type: 'post',
+					url: '/wx',
+					processData: false,
+					data: reqXml,
+					beforeSend: function(xhr){
+						xhr.setRequestHeader('Content-Type', 'text/plain');
+					},
+					success: function(resXml) {
+						var resObj = wxToObj(resXml);
+						console.log('received', resObj);
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

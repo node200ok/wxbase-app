@@ -28,14 +28,7 @@ wxbase({
 	wxToken: config.wxToken,
 	wxHandler: require('./lib/my-wx-handler')
 });
-// 测试 wxbase
-var wxTest = require('./test/wx-test')({
-	hostUrl: config.hostUrl,
-	wxPath: config.wxPath
-});
-app.get('/', function(req, res, next) {
-	wxTest(res);
-});
+app.use(express.static(config.publicDir))
 http.createServer(app).on('error', function(err) {
 	throw new Error('Port ' + config.port + ' occupied');
 }).listen(config.port, function() {
