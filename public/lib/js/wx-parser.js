@@ -1,5 +1,5 @@
 
-var wxToXml = function(obj) {
+function wxToXml(obj) {
 	// TODO: use Array.prototype.join()
 	var xml = '';
 	xml += '<xml>';
@@ -63,7 +63,7 @@ var wxToXml = function(obj) {
 	xml += '</xml>';
 	return xml;
 }
-var wxToObj = function(xml) {
+function wxToObj(xml) {
 	var $xml = $(xml),
 	obj = {
 		toUserName: getCData($xml.find('ToUserName').html()),
