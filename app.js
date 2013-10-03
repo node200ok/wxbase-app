@@ -4,12 +4,12 @@ var http = require('http'),
 	express = require('express'),
 	mode = (process.argv && process.argv[2]) || 'bae', // 运行模式
 	config = (function() {
-		var configFile = __dirname + '/config/' + mode + '.js';
 		// 确保配置文件存在
-		if (! fs.existsSync(configFile)) {
+		try {
+			return require(__dirname + '/config/' + mode);
+		} catch (err) {
 			throw new Error('Config file not found');
 		}
-		return require(configFile);
 	})(),
 	app = express(),
 	wxbase = require('./lib/wxbase/');
@@ -22,16 +22,22 @@ app.configure(function() {
 });
 
 var reqList = [];
+app.post(config.wxPath, function(req, res, next) {
+	var reqXml = req.rawBody;
+	reqList.push(reqXml);
+	next();
+});
+app.get('/look', function(req, res, next) {
+	res.send(reqList);
+});
 // 使用 wxbase
 wxbase({
 	app: app,
 	wxPath: config.wxPath,
 	wxToken: config.wxToken,
-	wxHandler: require('./lib/my-wx-handler')(reqList)
+	wxHandler: require('./lib/my-wx-handler')()
 });
-app.get('/look', function(req, res, next) {
-	res.send(reqList);
-});
+
 app.use(express.static(config.publicDir));
 http.createServer(app).on('error', function(err) {
 	throw new Error('Port ' + config.port + ' occupied');
