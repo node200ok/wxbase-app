@@ -4,3 +4,4 @@
 **/*.txt
 **/*.log
 /node_modules
+/test/dest
