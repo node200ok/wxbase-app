@@ -20,7 +20,11 @@ function wxToXml(obj) {
 			'<PicUrl><![CDATA['+ obj.picUrl +']]></PicUrl>'
 		].join('');
 	} else if (obj.msgType === 'voice') {
-		//
+		xml += [
+			'<MediaId><![CDATA['+ obj.mediaId +']]></MediaId>',
+			'<Format><![CDATA['+ obj.format +']]></Format>',
+			'<Recognition><![CDATA['+ obj.recognition +']]></Recognition>'
+		].join('');
 	} else if (obj.msgType === 'link') {
 		xml += [
 			'<Title><![CDATA['+ obj.title +']]></Title>',
@@ -86,7 +90,11 @@ function wxToObj(xml) {
 			picUrl: getCData($xml.find('PicUrl').html())
 		});
 	} else if (obj.msgType === 'voice') {
-		//
+		_.extend(obj, {
+			mediaId: getCData($xml.find('MediaId').html()),
+			format: getCData($xml.find('Format').html()),
+			recognition: getCData($xml.find('Recognition').html())
+		});
 	} else if (obj.msgType === 'link') {
 		_.extend(obj, {
 			title: getCData($xml.find('Title').html()),
