@@ -68,10 +68,16 @@
 		            						<div>
 			            						<h3>用户名</h3>
 			            						<div class="input-control text">
-													<input type="text" id="from-user-name" value="test-user" />
+													<input type="text" name="fromUserName" value="test-user" />
 												</div>
 			            					</div>
-											<input type="hidden" id="to-user-name" value="the-host" />
+			            					<div>
+			            						<h3>MsgId</h3>
+			            						<div class="input-control text">
+													<input type="text" name="msgId" value="123456" />
+												</div>
+			            					</div>
+											<input type="hidden" name="toUserName" value="the-host" />
 			            					
 			            					<div>
 			            						<h3>消息类型</h3>
@@ -100,16 +106,41 @@
 										
 										<fieldset data-type="text">
 											<legend>文本消息</legend>
-											<h3>内容</h3>
-											<div class="input-control textarea">
-												<textarea name="content"></textarea>
+											<div>
+												<h3>内容</h3>
+												<div class="input-control textarea">
+													<textarea name="content"></textarea>
+												</div>
 											</div>
 										</fieldset>
 										<fieldset data-type="image">
 											<legend>图片消息</legend>
-											<h3>URL</h3>
-											<div class="input-control text">
-												<input type="url" name="picUrl" />
+											<div>
+												<h3>URL</h3>
+												<div class="input-control text">
+													<input type="url" name="picUrl" value="http://wyu.cn/a.png" />
+												</div>
+											</div>
+										</fieldset>
+										<fieldset data-type="voice">
+											<legend>语音消息</legend>
+											<div>
+												<h3>MediaId</h3>
+												<div class="input-control text">
+													<input type="text" name="mediaId" value="abcdef" />
+												</div>
+											</div>
+											<div>
+												<h3>格式</h3>
+												<div class="input-control text">
+													<input type="text" name="format" value="amr" />
+												</div>
+											</div>
+											<div>
+												<h3>识别</h3>
+												<div class="input-control text">
+													<input type="text" name="recognition" value="小猪" />
+												</div>
 											</div>
 										</fieldset>
 										<fieldset data-type="location">
@@ -209,10 +240,7 @@
 				ev.preventDefault();
 				
 				var msgType = currMsgType, reqObj = {
-					fromUserName: $form.find('#from-user-name').val(),
-					toUserName: $form.find('#to-user-name').val(),
 					createTime: new Date().getTime(),
-					msgId: 123456,
 					msgType: msgType
 				}
 				_.extend(reqObj, $form.serializeJSON());
