@@ -21,14 +21,18 @@ app.configure(function() {
 	app.use(require('./lib/rawbody'));
 });
 
+var reqList = [];
 // 使用 wxbase
 wxbase({
 	app: app,
 	wxPath: config.wxPath,
 	wxToken: config.wxToken,
-	wxHandler: require('./lib/my-wx-handler')
+	wxHandler: require('./lib/my-wx-handler')(reqList)
 });
-app.use(express.static(config.publicDir))
+app.get('/look', function(req, res, next) {
+	res.send(reqList);
+});
+app.use(express.static(config.publicDir));
 http.createServer(app).on('error', function(err) {
 	throw new Error('Port ' + config.port + ' occupied');
 }).listen(config.port, function() {
