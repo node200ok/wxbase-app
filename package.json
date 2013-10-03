@@ -1,14 +1,14 @@
 {
 	"name": "wxbase-app",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "这是一个demo - wxbase：一个基于node的微信交互模块",
 	"author": "n200ok",
 	"main": "app.js",
 	"dependencies": {
 		"underscore": "1.4.4",
 		"express": "3.4.0",
-        "bufferhelper": "0.2.0",
-        "domino": "1.0.11",
-        "zepto-node": "1.0.0"
+		"bufferhelper": "0.2.0",
+		"domino": "1.0.11",
+		"zepto-node": "1.0.0"
 	}
 }

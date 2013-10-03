@@ -1,8 +1,7 @@
 
 function wxToXml(obj) {
-	// TODO: use Array.prototype.join()
-	var xml = '';
-	xml += '<xml>';
+	if (! obj) return '';
+	var xml = '<xml>';
 	xml += [
 		'<ToUserName><![CDATA['+ obj.toUserName +']]></ToUserName>',
 		'<FromUserName><![CDATA['+ obj.fromUserName +']]></FromUserName>',
@@ -67,13 +66,14 @@ function wxToXml(obj) {
 	return xml;
 }
 function wxToObj(xml) {
+	if (! xml) return null;
 	var $xml = $(xml),
-	obj = {
-		toUserName: getCData($xml.find('ToUserName').html()),
-		fromUserName: getCData($xml.find('FromUserName').html()),
-		createTime: parseInt($xml.find('CreateTime').html()),
-		msgType: getCData($xml.find('MsgType').html())
-	}
+		obj = {
+			toUserName: getCData($xml.find('ToUserName').html()),
+			fromUserName: getCData($xml.find('FromUserName').html()),
+			createTime: parseInt($xml.find('CreateTime').html()),
+			msgType: getCData($xml.find('MsgType').html())
+		}
 	if ($xml.find('MsgId').length) {
 		obj.msgId = parseInt($xml.find('MsgId').html());
 	}
