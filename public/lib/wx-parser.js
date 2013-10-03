@@ -9,6 +9,9 @@ function wxToXml(obj) {
 		'<CreateTime>'+ obj.createTime +'</CreateTime>',
 		'<MsgType><![CDATA['+ obj.msgType +']]></MsgType>'
 	].join('');
+	if (obj.msgId) {
+		xml += '<MsgId>'+ obj.msgId +'</MsgId>';
+	}
 	if (obj.msgType === 'text') {
 		xml += [
 			'<Content><![CDATA['+ obj.content +']]></Content>'
@@ -68,9 +71,11 @@ function wxToObj(xml) {
 	obj = {
 		toUserName: getCData($xml.find('ToUserName').html()),
 		fromUserName: getCData($xml.find('FromUserName').html()),
-		createTime: $xml.find('CreateTime').html(),
-		msgType: getCData($xml.find('MsgType').html()),
-		msgId: $xml.find('MsgId').html()
+		createTime: parseInt($xml.find('CreateTime').html()),
+		msgType: getCData($xml.find('MsgType').html())
+	}
+	if ($xml.find('MsgId').length) {
+		obj.msgId = parseInt($xml.find('MsgId').html());
 	}
 	if (obj.msgType === 'text') {
 		_.extend(obj, {
