@@ -2,7 +2,8 @@
 var _ = require('underscore'),
 	rootDir = __dirname + '/..',
 	publicDir = rootDir + '/public',
-	voiceDir = publicDir + '/voice';
+	voiceDir = publicDir + '/voice',
+	wxAccount = require('../private/wx-account');	// private
 
 module.exports = function(mode) {
 	var config = {
@@ -10,7 +11,8 @@ module.exports = function(mode) {
 		publicDir: publicDir,
 		voiceDir: voiceDir,
 		wxPath: '/wx',
-    	wxToken: 'whahax'
+    	wxToken: 'whahax',
+    	wxAccount: wxAccount
 	}
 	// 确保配置文件存在
 	try {

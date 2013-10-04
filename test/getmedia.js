@@ -7,12 +7,13 @@ var fs = require('fs'),
 	$ = Zepto(window),
 	md5 = require('../lib/md5'),
 	Client = require('../lib/client'),
-	client = new Client('mp.weixin.qq.com');
+	client = new Client('mp.weixin.qq.com'),
+	config = require('../config/')('local');
 
 
 client.post('/cgi-bin/login?lang=zh_CN', {
-	username: "h5lium@163.com",
-	pwd: md5('LLiang2013'),
+	username: config.wxAccount.username,
+	pwd: md5(config.wxAccount.password),
 	imgcode: "",
 	f: "json"
 }, {
@@ -28,7 +29,7 @@ client.post('/cgi-bin/login?lang=zh_CN', {
 		errCode = resObj['ErrCode'];
 	
 	if (! _.contains([0, 65201, 65202], errCode)) {
-		console.error(getErrMsg(errCode))
+		console.error(getErrMsg(errCode));
 		throw new Error('Wx public account login fail');
 	} else {
 		var homeUrl = resObj['ErrMsg'],
@@ -48,16 +49,16 @@ client.post('/cgi-bin/login?lang=zh_CN', {
 			fs.existsSync(voiceDir) || fs.mkdirSync(voiceDir);
 			_.each(ids, function(id) {
 				client.get('/cgi-bin/getvoicedata?msgid='+ id +'&fileid=&token='+ token +'&lang=zh_CN', {
-					'Accept': '*/*',
-					'Accept-Encoding': 'identity;q=1, *;q=0',
-					'Accept-Language': 'zh-CN,zh;q=0.8',
-					'Host': 'mp.weixin.qq.com',
-					'Range': 'bytes=0-',
-					'Referer': 'https://mp.weixin.qq.com/cgi-bin/message?t=message/list&token=1937657309&count=20&day=7'
+					//'Accept': '*/*',
+					//'Accept-Encoding': 'identity;q=1, *;q=0',
+					//'Accept-Language': 'zh-CN,zh;q=0.8',
+					//'Host': 'mp.weixin.qq.com',
+					//'Range': 'bytes=0-',
+					//'Referer': 'https://mp.weixin.qq.com/cgi-bin/message?t=message/list&token=1937657309&count=20&day=7'
 				}, {}, function(err, res, buf) {
 					var filename = __dirname + '/voice/'+ id +'.mp3';
-					err || fs.existsSync(filename) || fs.writeFile(filename, buf, function(err) {
-						err || console.log(id);
+					fs.existsSync(filename) || fs.writeFile(filename, buf, function(err) {
+						console.log('saved: ' + id);
 					});
 				});
 			});
