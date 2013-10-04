@@ -12,7 +12,8 @@ module.exports = function(mode) {
 		voiceDir: voiceDir,
 		wxPath: '/wx',
     	wxToken: 'whahax',
-    	wxAccount: wxAccount
+    	wxAccount: wxAccount,
+    	hostUrl: 'http://wxbase.duapp.com'
 	}
 	// 确保配置文件存在
 	try {
