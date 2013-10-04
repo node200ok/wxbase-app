@@ -108,7 +108,7 @@ function wxToObj(xml) {
 		});
 	} else if (obj.msgType === 'music') {
 		_.extend(obj, {
-			title: getCData($xml.find('Music PicUrl').html()),
+			title: getCData($xml.find('Music Title').html()),
 			description: getCData($xml.find('Music Description').html()),
 			musicUrl: getCData($xml.find('Music MusicUrl').html()),
 			hqMusicUrl: getCData($xml.find('Music HQMusicUrl').html())
