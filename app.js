@@ -1,26 +1,25 @@
 
 var http = require('http'),
 	fs = require('fs'),
+	_ = require('underscore'),
 	express = require('express'),
 	mode = (process.argv && process.argv[2]) || 'bae', // 运行模式
-	config = (function() {
-		// 确保配置文件存在
-		try {
-			return require(__dirname + '/config/' + mode);
-		} catch (err) {
-			throw new Error('Config file not found');
-		}
-	})(),
+	config = require('./config/')(mode),
 	app = express(),
 	wxbase = require('./lib/wxbase/');
 
 app.configure(function() {
+	_.each([config.publicDir, config.voiceDir], function(val) {
+		fs.existsSync(val) || fs.mkdir(val);
+	});
+	
 	app.set('env', config.env);
 	app.use(express.favicon());
 	app.use(express.bodyParser({uploadDir: config.tmpDir}));
 	app.use(require('./lib/rawbody'));
 });
 
+// 查看请求列表
 var reqList = [];
 app.post(config.wxPath, function(req, res, next) {
 	var reqXml = req.rawBody;

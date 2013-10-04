@@ -44,8 +44,8 @@ client.post('/cgi-bin/login?lang=zh_CN', {
 				}),
 				ids = _.pluck(mediaItems, 'id');
 			
-			console.log(ids);
-			
+			var voiceDir = __dirname + '/voice/';
+			fs.existsSync(voiceDir) || fs.mkdirSync(voiceDir);
 			_.each(ids, function(id) {
 				client.get('/cgi-bin/getvoicedata?msgid='+ id +'&fileid=&token='+ token +'&lang=zh_CN', {
 					'Accept': '*/*',
@@ -55,7 +55,10 @@ client.post('/cgi-bin/login?lang=zh_CN', {
 					'Range': 'bytes=0-',
 					'Referer': 'https://mp.weixin.qq.com/cgi-bin/message?t=message/list&token=1937657309&count=20&day=7'
 				}, {}, function(err, res, buf) {
-					fs.writeFileSync(__dirname + '/dest/voice_'+ id +'.mp3', buf);
+					var filename = __dirname + '/voice/'+ id +'.mp3';
+					err || fs.existsSync(filename) || fs.writeFile(filename, buf, function(err) {
+						err || console.log(id);
+					});
 				});
 			});
 		});
