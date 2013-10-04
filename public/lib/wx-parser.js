@@ -78,6 +78,7 @@ function wxToObj(xml) {
 			createTime: parseInt($xml.find('CreateTime').html()),
 			msgType: getCData($xml.find('MsgType').html())
 		}
+		
 	if ($xml.find('MsgId').length) {
 		obj.msgId = parseInt($xml.find('MsgId').html());
 	}
@@ -135,5 +136,7 @@ function wxToObj(xml) {
 }
 
 function getCData(str){
-	return str ? str.substring(11, str.length - 5) : '';
+	if (! str) return '';
+	//return str.substring(11, str.length - 5);
+	return str.match(/^\s*(<!\-\-|&lt;!)\[CDATA\[(.*)\]\](&gt;|\-\->)\s*$/)[2];
 }
