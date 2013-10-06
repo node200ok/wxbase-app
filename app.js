@@ -25,7 +25,7 @@ wxbase({
 	app: app,
 	wxPath: config.wxPath,
 	wxToken: config.wxToken,
-	wxHandler: require('./lib/my-wx-handler').init(config)
+	wxHandler: require('./lib/my-wx-handler').init(config, app)
 });
 
 app.use(express.static(config.publicDir));
