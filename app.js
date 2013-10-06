@@ -27,10 +27,6 @@ wxbase({
 	wxToken: config.wxToken,
 	wxHandler: require('./lib/my-wx-handler').init(config, app)
 });
-// for test
-setInterval(function() {
-	console.log('Im alive');
-}, 1000 * 60 * 30);	// 30min
 
 app.use(express.static(config.publicDir));
 http.createServer(app).on('error', function(err) {
