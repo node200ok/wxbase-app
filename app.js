@@ -10,8 +10,8 @@ var http = require('http'),
 
 app.configure(function() {
 	// 确保目录存在
-	_.each([config.publicDir, config.voiceDir], function(val) {
-		fs.existsSync(val) || fs.mkdir(val);
+	_.each(['publicDir', 'voiceDir'], function(val) {
+		fs.existsSync(config[val]) || fs.mkdir(config[val]);
 	});
 	
 	app.set('env', config.env);
