@@ -19,7 +19,7 @@ module.exports = function(mode) {
 	try {
 		_.extend(config, require('./' + mode));
 	} catch (err) {
-		throw new Error('Config file not found');
+		throw new Error('Config File Not Found');
 	}
 	return config;
 }

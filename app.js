@@ -30,7 +30,7 @@ wxbase({
 
 app.use(express.static(config.publicDir));
 http.createServer(app).on('error', function(err) {
-	throw new Error('Port ' + config.port + ' occupied');
+	throw new Error('Port ' + config.port + ' Occupied');
 }).listen(config.port, function() {
 	console.log('Listening on port ' + config.port);
 });
