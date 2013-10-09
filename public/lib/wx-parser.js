@@ -38,12 +38,12 @@ function wxToXml(obj) {
 		].join('');
 	} else if (obj.msgType === 'music') {
 		xml += [
-			'<Music>',
-				'<Title><![CDATA['+ obj.title +']]></Title>',
-				'<Description><![CDATA['+ obj.description +']]></Description>',
-				'<MusicUrl><![CDATA['+ obj.musicUrl +']]></MusicUrl>',
-				'<HQMusicUrl><![CDATA['+ obj.hqMusicUrl +']]></HQMusicUrl>',
-			'</Music>'
+            '<Music>',
+                '<Title><![CDATA['+ obj.music.title +']]></Title>',
+                '<Description><![CDATA['+ obj.music.description +']]></Description>',
+                '<MusicUrl><![CDATA['+ obj.music.musicUrl +']]></MusicUrl>',
+                '<HQMusicUrl><![CDATA['+ obj.music.hqMusicUrl +']]></HQMusicUrl>',
+            '</Music>'
 		].join('');
 	} else if (obj.msgType === 'location') {
 		xml += [
@@ -53,18 +53,21 @@ function wxToXml(obj) {
 			'<Label><![CDATA['+ obj.label +']]></Label>'
 		].join('');
 	} else if (obj.msgType === 'news') {
-		// TODO: now support only one
-		xml += [
-			'<ArticleCount>1</ArticleCount>',
-			'<Articles>',
-				'<item>',
-					'<Title><![CDATA['+ obj.article.title +']]></Title>',
-					'<Description><![CDATA['+ obj.article.description +']]></Description>',
-					'<PicUrl><![CDATA['+ obj.article.picUrl +']]></PicUrl>',
-					'<Url><![CDATA['+ obj.article.url +']]></Url>',
-				'</item>',
-			'</Articles>'
-		].join('');
+        var maxCount = 10,
+            count = Math.min(obj.articles.length, maxCount);
+        xml += '<ArticleCount>'+ count +'</ArticleCount>';
+        _.each(obj.articles, function(val) {
+            xml += [
+                '<Articles>',
+                '<item>',
+                '<Title><![CDATA['+ val.title +']]></Title>',
+                '<Description><![CDATA['+ val.description +']]></Description>',
+                '<PicUrl><![CDATA['+ val.picUrl +']]></PicUrl>',
+                '<Url><![CDATA['+ val.url +']]></Url>',
+                '</item>',
+                '</Articles>'
+            ].join('');
+        });
 	}
 	xml += '</xml>';
 	return xml;
@@ -108,10 +111,12 @@ function wxToObj(xml) {
 			});
 		} else if (obj.msgType === 'music') {
 			_.extend(obj, {
-				title: getCData($xml.find('Music Title').html()),
-				description: getCData($xml.find('Music Description').html()),
-				musicUrl: getCData($xml.find('Music MusicUrl').html()),
-				hqMusicUrl: getCData($xml.find('Music HQMusicUrl').html())
+                music: {
+                    title: getCData($xml.find('Music Title').html()),
+                    description: getCData($xml.find('Music Description').html()),
+                    musicUrl: getCData($xml.find('Music MusicUrl').html()),
+                    hqMusicUrl: getCData($xml.find('Music HQMusicUrl').html())
+                }
 			});
 		} else if (obj.msgType === 'location') {
 			_.extend(obj, {
@@ -121,15 +126,21 @@ function wxToObj(xml) {
 				label: getCData($xml.find('Label').html())
 			});
 		} else if (obj.msgType === 'news') {
-			// TODO: now support only one
-			_.extend(obj, {
-				article: {
-					title: getCData($xml.find('Articles item Title').html()),
-					description: getCData($xml.find('Articles item Description').html()),
-					picUrl: getCData($xml.find('Articles item PicUrl').html()),
-					url: getCData($xml.find('Articles item Url').html())
-				}
-			});
+            _.extend(obj, {
+                articles: (function() {
+                    var ret = [], $articles = $xml.find('Articles');
+                    $articles.children('item').each(function(i, el) {
+                        var $el = $(el);
+                        ret.push({
+                            title: getCData($el.find('Title').html()),
+                            description: getCData($el.find('Description').html()),
+                            picUrl: getCData($el.find('PicUrl').html()),
+                            url: getCData($el.find('Url').html())
+                        });
+                    });
+                    return ret;
+                })()
+            });
 		}
 		return obj;
 	} catch (err) {
