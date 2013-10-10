@@ -73,6 +73,7 @@ function wxToXml(obj) {
 	return xml;
 }
 function wxToObj(xml) {
+    if (! xml) return null;
 	try {
 		var $xml = $(xml),
 			obj = {
