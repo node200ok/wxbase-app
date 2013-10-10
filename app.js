@@ -25,7 +25,14 @@ wxbase({
 	app: app,
 	wxPath: config.wxPath,
 	wxToken: config.wxToken,
-	wxHandler: require('./lib/my-wx-handler').init(config, app)
+	wxHandler: require('./lib/my-wx-handler').init({
+        app: app,
+        hostUrl: config.hostUrl,
+        publicDir: config.publicDir,
+        voiceDir: config.voiceDir,
+        wxAccount: config.wxAccount
+    }),
+    wxValidPost: config.wxValidPost
 });
 
 app.use(express.static(config.publicDir));
