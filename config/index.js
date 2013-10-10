@@ -1,25 +1,14 @@
 
-var _ = require('underscore'),
-	rootDir = __dirname + '/..',
-	publicDir = rootDir + '/public',
-	voiceDir = publicDir + '/voice',
-	wxAccount = require('../private/wx-account');	// private
+var _ = require('underscore');
 
 module.exports = function(mode) {
-	var config = {
-		rootDir: rootDir,
-		publicDir: publicDir,
-		voiceDir: voiceDir,
-		wxPath: '/wx',
-    	wxToken: 'whahax',
-    	wxAccount: wxAccount,
-    	hostUrl: 'http://wxbase.duapp.com'
-	}
+	var config = {}
 	// 确保配置文件存在
 	try {
+        _.extend(config, require('./common'));
 		_.extend(config, require('./' + mode));
 	} catch (err) {
-		throw new Error('Config File Not Found');
+		throw new Error('Config Error');
 	}
 	return config;
 }
